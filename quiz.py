@@ -17,9 +17,11 @@ quiz_data = {
     "medium": (quiz_medium_text, quiz_medium_answers),
     "hard": (quiz_hard_text, quiz_hard_answers)}
 
+# Returns corresponding text and answers
 def get_quiz_data(chosen_difficulty):
     return quiz_data[chosen_difficulty]
 
+# Tracks if the input is the same as the position in the list of answers
 def word_index(word, answers):
     counter = 0
     for pos in answers:
