@@ -55,7 +55,7 @@ def get_answer(quiz_text, quiz_answers, question_number, wrong_attempts):
 
 
 # Function returns true if user finished game in less than number_to_win wrong attempts
-def start_the_game(quiz_text, quiz_answers):
+def finish_the_game(quiz_text, quiz_answers):
     question_wording = quiz_text
     wrong_attempts = 0
     question_number = 0
@@ -86,7 +86,7 @@ def start_game():
     game_difficulty = get_game_difficulty()
 
     quiz_text, quiz_answers = get_quiz_data(game_difficulty)
-    won = start_the_game(quiz_text, quiz_answers)
+    won = finish_the_game(quiz_text, quiz_answers)
     if won == True:
         print "\nYou have won!"
     else:
