@@ -1,38 +1,65 @@
-# A list of replacement words to be passed in to the play game function.
-parts_of_speech  = ["PLACE", "PERSON", "PLURALNOUN", "NOUN", "NAME", "VERB", "OCCUPATION", "ADJECTIVE"]
+# The user has 5 attempts to correctly guess
+number_to_win = 5
 
-# The following are some test strings to pass in to the play_game function.
-quiz_easy = "Hi, my name is NAME and I really like to VERB PLURALNOUN. I'm also a OCCUPATION at PLACE."
-quiz_medium = """PERSON! What is PERSON going to do with all these ADJECTIVE PLURALNOUN? Only a registered
-OCCUPATION could VERB them."""
-quiz_hard = "What a ADJECTIVE day! I can VERB the day off from being a OCCUPATION and go VERB at PLACE."
+# The following are the possible strings for the quiz pass in to the start_game function.
+quiz_easy_text = "Roses are __1__, violets are __2__, \nsugar is __3__, and so are __4__."
+quiz_easy_answers = ["red", "blue", "sweet", "you"]
 
-# Checks if a word in parts_of_speech is a substring of the word passed in.
-def word_in_pos(word, parts_of_speech):
-    for pos in parts_of_speech:
-        if pos in word:
-            return pos
+quiz_medium_text = "Sing with me, sing for the __1__ \nSing for the laughter, sing for the __2__" \
+"\nSing with me, just for __3__ \nMaybe tomorrow, the good Lord will take you __4__"
+quiz_medium_answers = ["years", "tears", "today", "away"]
+
+quiz_hard_text = "The __1__  don't like __2__ \nRocking the __3__  \n__4__ the Casbah"
+quiz_hard_answers = ["Shareef", "it", "Casbah", "Rock"]
+
+quiz_data = {
+    "easy": (quiz_easy_text, quiz_easy_answers),
+    "medium": (quiz_medium_text, quiz_medium_answers),
+    "hard": (quiz_hard_text, quiz_hard_answers)}
+
+def get_quiz_data(chosen_difficulty):
+    return quiz_data[chosen_difficulty]
+
+def word_index(word, answers):
+    counter = 0
+    for pos in answers:
+        if pos == word:
+            return counter
+        counter = counter + 1 
     return None
 
-# Plays a full game of mad_libs. A player is prompted to replace words in ml_string,
-# which appear in parts_of_speech with their own words.
-def play_game(ml_string, parts_of_speech):
-    replaced = []
-    ml_string = ml_string.split()
-    for word in ml_string:
-        replacement = word_in_pos(word, parts_of_speech)
-        if replacement != None:
-            user_input = raw_input("Type in a: " + replacement + " ")
-            word = word.replace(replacement, user_input)
-            replaced.append(word)
+# Prints the selected difficulty quiz and counts the amount of incorrect attempts
+def get_answer(quiz_text, quiz_answers, question_number, wrong_attempts):
+    print quiz_text
+    qn = "__" + str(question_number + 1) + "__"
+    while True:
+        user_input = raw_input("\nType in a " + qn + ":")
+        word_pos = word_index(user_input, quiz_answers)
+        if word_pos == question_number:
+            quiz_text = quiz_text.replace(qn, user_input)
+            return (quiz_text, wrong_attempts)
         else:
-            replaced.append(word)
-    replaced = " ".join(replaced)
-    return replaced
+            print "\nWrong answer, you have " + str(number_to_win - 1 - wrong_attempts) + " attempt left"
+            wrong_attempts = wrong_attempts + 1
+        if wrong_attempts >= number_to_win:
+            return (quiz_text, wrong_attempts)
 
+# Function returns true if user finished game in less than number_to_win wrong attempts
+def start_the_game(quiz_text, quiz_answers):
+    qt = quiz_text
+    wrong_attempts = 0
+    question_number = 0
+    for answer in quiz_answers:
+        qt, wrong_attempts = get_answer(qt, quiz_answers, question_number, wrong_attempts)
+        if wrong_attempts >= number_to_win:
+            return False
+        question_number = question_number + 1
+    return True
+
+# Asks the user to select a difficulty for the game
 def get_game_difficulty():
     difficulties = ['easy', 'medium', 'hard']
-    prompt = "To begin, select a difficulty (easy, medium, or hard): "
+    prompt = "Select a difficulty (easy, medium, or hard):"
 
     chosen_difficulty = raw_input(prompt).lower()
     while chosen_difficulty not in difficulties:
@@ -41,17 +68,16 @@ def get_game_difficulty():
     
     return chosen_difficulty
 
+# Plays a full quiz game. A player is prompted to guess the words correctly,
 def start_game():
-    print "Welcome to the quiz!"
+    print "Welcome to the quiz!\n"
     game_difficulty = get_game_difficulty()
-    test = ""
-    if game_difficulty == "easy":
-        test = quiz_easy
-    elif game_difficulty == "medium":
-        test = quiz_medium
-    elif game_difficulty == "hard":
-        test = quiz_hard
-    print play_game(test, parts_of_speech)
-    print "done " + game_difficulty
+
+    quiz_text, quiz_answers = get_quiz_data(game_difficulty)
+    won = start_the_game(quiz_text, quiz_answers)
+    if won == True:
+        print "\nYou have won!"
+    else:
+        print "\nYou have lost."
 
 start_game()
