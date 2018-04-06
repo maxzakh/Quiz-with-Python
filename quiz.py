@@ -27,7 +27,7 @@ def get_quiz_data(chosen_difficulty):
     return quiz_data[chosen_difficulty]
 
 
-# Tracks if the input is the same as the position in the list of answers
+# Tracks if the input corresponds with answers
 def word_index(word, answers):
     counter = 0
     for pos in answers:
@@ -37,7 +37,7 @@ def word_index(word, answers):
     return None
 
 
-# Prints the selected difficulty quiz and counts the amount of incorrect attempts
+# Prints the selected quiz, tracks inputs and number of wrong attempts
 def get_answer(quiz_text, quiz_answers, question_number, wrong_attempts):
     print quiz_text
     current_question = "__" + str(question_number + 1) + "__"
