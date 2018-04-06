@@ -64,6 +64,7 @@ def finish_the_game(quiz_text, quiz_answers):
         if wrong_attempts >= number_to_win:
             return False
         question_number = question_number + 1
+    print question_wording
     return True
 
 
